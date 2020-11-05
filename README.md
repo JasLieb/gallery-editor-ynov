@@ -8,6 +8,9 @@ A gallery editor app developped in Angular around Ionic framework during WebMobi
 
 - Ionic cordova clis `npm install -g ionic cordova`.
 
+- Android Studio installed with already SDK downloaded (according to your Android [emulated] device SDK version)
+  Can be useful to retrieve Android SDK paths
+
 - Java JDK 1.8 available [here](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
 
 - Gradle 6.7 available [here](https://gradle.org/releases/)
