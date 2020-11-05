@@ -6,7 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { CameraPreview } from '@ionic-native/camera-preview';
+import { ComponentsModule } from '../components/components.module';
 
 @NgModule({
   declarations: [
@@ -16,6 +16,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    ComponentsModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -26,7 +27,6 @@ import { CameraPreview } from '@ionic-native/camera-preview';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    CameraPreview,
   ]
 })
 export class AppModule {}

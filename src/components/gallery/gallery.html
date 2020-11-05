@@ -1,0 +1,8 @@
+<button
+  ion-button
+  [color]="cameraOnOffBehavior.value ? 'success' : 'danger'"
+  (click)="handleOnOffCamera(!cameraOnOffBehavior.value)"
+>
+  Camera {{cameraOnOffBehavior.value ? "On" : "Off"}}
+</button>
+<camera [onOff$]="cameraOnOffBehavior"></camera>
