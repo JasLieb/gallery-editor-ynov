@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.2.4",
+    "@ionic/lab": "3.2.9",
     "cordova-plugin-android-permissions": "^1.1.0",
     "cordova-plugin-androidx": "^3.0.0",
     "cordova-plugin-camera-preview": "^0.12.1",
