@@ -1,9 +1,12 @@
 <ion-header>
   <ion-navbar>
-    <ion-title> Ionic Blank </ion-title>
+    <ion-title> Galerie Photo </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <gallery></gallery>
+  <button ion-button
+   [color]="yellow"
+   (click)="takePicture()"></button>
 </ion-content>

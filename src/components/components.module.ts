@@ -6,11 +6,13 @@ import { BrowserModule } from "@angular/platform-browser";
 import { IonicApp } from "ionic-angular/components/app/app-root";
 import { IonicModule } from "ionic-angular";
 
+import { Camera } from '@ionic-native/camera/ngx';
+
 @NgModule({
   declarations: [GalleryComponent, CameraComponent],
   imports: [BrowserModule, IonicModule],
   bootstrap: [IonicApp],
   exports: [GalleryComponent, CameraComponent],
-  providers: [CameraPreview],
+  providers: [CameraPreview, Camera],
 })
 export class ComponentsModule {}
