@@ -24,6 +24,17 @@ export class PhotoEditorPage {
 
   class = "";
 
+  defaultFilters = {
+    grayscale: "0%",
+    blur: "0px",
+    contrast: "100%",
+    brightness: "1",
+    invert: "0%",
+    sepia: "0%"
+  }
+
+  filters = Object.assign({}, this.defaultFilters);
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad PhotoEditorPage');
   }
@@ -44,30 +55,30 @@ export class PhotoEditorPage {
   // }
 
   toggleNone() {
-    this.class = "";
+    this.filters = Object.assign({}, this.defaultFilters);
   }
 
   toggleGray() {
-    this.class = "gray";
+    this.filters.grayscale = this.filters.grayscale === this.defaultFilters.grayscale ? "80%" : this.defaultFilters.grayscale;
   }
 
   toggleBlur() {
-    this.class = "blur";
+    this.filters.blur = this.filters.blur === this.defaultFilters.blur ? "2px" : this.defaultFilters.blur;
   }
 
   toggleContrast() {
-    this.class = "contrast";
+    this.filters.contrast = this.filters.contrast === this.defaultFilters.contrast ? "150%" : this.defaultFilters.contrast;
   }
 
   toggleBright() {
-    this.class = "bright";
+    this.filters.brightness = this.filters.brightness === this.defaultFilters.brightness ? "1.5" : this.defaultFilters.brightness;
   }
 
   toggleInvert() {
-    this.class = "invert";
+    this.filters.invert = this.filters.invert === this.defaultFilters.invert ? "100%" : this.defaultFilters.invert;
   }
 
   toggleSepia() {
-    this.class = "sepia";
+    this.filters.sepia = this.filters.sepia === this.defaultFilters.sepia ? "80%" : this.defaultFilters.sepia;
   }
 }

@@ -23,7 +23,14 @@
           }" id="edit-image" src="assets/imgs/testimg.jpg"/>
       </ion-col> -->
       <ion-col>
-        <img [ngClass]="class" id="edit-image" src="assets/imgs/testimg.jpg" />
+        <!-- La synthaxe de ce ngStyle est une des seules solutions viables pour modifier dynamiquement les filtres -->
+        <img [ngClass]="class" id="edit-image" src="assets/imgs/testimg.jpg" [ngStyle]="{'filter': 
+          'grayscale(' + filters.grayscale + ')' + 
+          'blur(' + filters.blur + ')' + 
+          'contrast(' + filters.contrast + ')' + 
+          'brightness(' + filters.brightness + ')' +
+          'invert(' + filters.invert + ')' +
+          'sepia(' + filters.sepia + ')'}" />
       </ion-col>
     </ion-row>
     <ion-row>
@@ -53,15 +60,15 @@
         </button>
       </ion-col>
       <ion-col>
-          <button ion-button (click)="toggleInvert()">
-            Négatif
-          </button>
-        </ion-col>
-        <ion-col>
-            <button ion-button (click)="toggleSepia()">
-              Sepia
-            </button>
-          </ion-col>
+        <button ion-button (click)="toggleInvert()">
+          Négatif
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button (click)="toggleSepia()">
+          Sepia
+        </button>
+      </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>

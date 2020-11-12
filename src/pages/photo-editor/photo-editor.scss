@@ -3,29 +3,31 @@ page-photo-editor {
         width: 100%;
     }
 
-    .gray {
-        filter: grayscale(80%);
-    }
+    //Les filtres css sont rajoutés dynamiquement dans le .ts afin de pouvoir additionner les filtres.
 
-    .blur {
-        filter: blur(2px);
-    }
+    // .gray {
+    //     filter: grayscale(80%);
+    // }
 
-    .contrast {
-        filter: contrast(150%);
-    }
+    // .blur {
+    //     filter: blur(2px);
+    // }
 
-    .bright {
-        filter: brightness(1.5);
-      }
+    // .contrast {
+    //     filter: contrast(150%);
+    // }
 
-      .invert {
-        -webkit-filter: invert(100%);
-                filter: invert(100%);
-      }
+    // .bright {
+    //     filter: brightness(1.5);
+    //   }
 
-      .sepia {
-        -webkit-filter: sepia(80%);
-                filter: sepia(80%);
-      }
+    // .invert {
+    // -webkit-filter: invert(100%);
+    //         filter: invert(100%);
+    // }
+
+    // .sepia {
+    // -webkit-filter: sepia(80%);
+    //         filter: sepia(80%);
+    // }
 }
