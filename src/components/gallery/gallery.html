@@ -5,4 +5,12 @@
 >
   Camera {{cameraOnOffBehavior.value ? "On" : "Off"}}
 </button>
+
+<button
+  ion-button
+  (click)="showGallery()"
+>
+  Galerie photo
+</button>
+
 <camera [onOff$]="cameraOnOffBehavior"></camera>
