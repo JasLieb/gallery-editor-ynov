@@ -2,4 +2,30 @@ page-photo-editor {
     #edit-image {
         width: 100%;
     }
+
+    .gray {
+        filter: grayscale(80%);
+    }
+
+    .blur {
+        filter: blur(2px);
+    }
+
+    .contrast {
+        filter: contrast(150%);
+    }
+
+    .bright {
+        filter: brightness(1.5);
+      }
+
+      .invert {
+        -webkit-filter: invert(100%);
+                filter: invert(100%);
+      }
+
+      .sepia {
+        -webkit-filter: sepia(80%);
+                filter: sepia(80%);
+      }
 }

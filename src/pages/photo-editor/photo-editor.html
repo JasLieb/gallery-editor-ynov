@@ -13,9 +13,55 @@
 <ion-content padding>
   <ion-grid>
     <ion-row>
+      <!-- 
+        Les filtres ne s'additionnent pas
+        <ion-col>
+          <img   [ngClass]="{
+            'gray': grayFilter,
+            'blur': blurFilter,
+            'contrast': contrastFilter
+          }" id="edit-image" src="assets/imgs/testimg.jpg"/>
+      </ion-col> -->
       <ion-col>
-          <img id="edit-image" [src]="'assets/imgs/testimg.jpg'"/>
+        <img [ngClass]="class" id="edit-image" src="assets/imgs/testimg.jpg" />
       </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button (click)="toggleNone()">
+          Aucun
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button (click)="toggleGray()">
+          Gris
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button (click)="toggleBlur()">
+          Flou
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button (click)="toggleContrast()">
+          Contrasté
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button (click)="toggleBright()">
+          Lumineux
+        </button>
+      </ion-col>
+      <ion-col>
+          <button ion-button (click)="toggleInvert()">
+            Négatif
+          </button>
+        </ion-col>
+        <ion-col>
+            <button ion-button (click)="toggleSepia()">
+              Sepia
+            </button>
+          </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
