@@ -2,8 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SearchService } from '../../services/search/search.service';
 import { imagesPaths } from "../../assets/imgs/imageDictionary";
-import { SearchOptions } from '../../core/model/filters/searchFilter.model';
+import { DateInterval, SearchOptions } from '../../core/model/filters/searchOptions.model';
 import { Localization } from '../../core/model/filters/localization.model';
+import { SearchFilters } from '../../core/model/filters/searchFilters.model';
+
+interface IonicDatetimeValue {
+  year: number;
+  month: number;
+  day: number;
+}
 
 @Component({
   selector: 'gallery',
@@ -11,8 +18,21 @@ import { Localization } from '../../core/model/filters/localization.model';
 })
 export class GalleryComponent implements OnInit {
   cameraOnOffBehavior: BehaviorSubject<boolean>;
-  filters$: Observable<any[]>;
+  filters$: Observable<SearchFilters>;
   images: string[];
+
+  defaultLocalization = Localization.default;
+  selectedLocalization: Localization = this.defaultLocalization;
+  
+  minDate: IonicDatetimeValue;
+  maxDate: IonicDatetimeValue;
+  
+  get dateInterval(): DateInterval {
+    return {
+      min: this.minDate ? new Date(this.minDate.year, this.minDate.month, this.minDate.day) : null,
+      max: this.maxDate ? new Date(this.maxDate.year, this.maxDate.month, this.maxDate.day) : null
+    };
+  }
 
   constructor(
     private searchService: SearchService
@@ -29,17 +49,13 @@ export class GalleryComponent implements OnInit {
     this.cameraOnOffBehavior.next(on);
   }
 
-  makeSearch(min: any, max: any, localization: Localization) {
-    // ion-datetime component return {} object if untouched component
-    const dateInterval = {
-      min: min.year ? new Date(min.year, min.month, min.day) : null,
-      max: max.year ? new Date(max.year, max.month, max.day) : null
-    };
-    this.images = this.searchService.filter(
-      new SearchOptions(
-        localization,
-        dateInterval
-      )
-    );
+  // ion-datetime component return {} for IonicDatetimeValue object if untouched component
+  makeSearch() {
+    console.log(this.selectedLocalization);
+    
+    this.images = this.searchService.filter({
+        localization: this.selectedLocalization,
+        dateInterval: this.dateInterval
+    });
   }
 }

@@ -3,8 +3,10 @@ import { from } from "rxjs/observable/from";
 import exifr from "exifr";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Localization } from "../../core/model/filters/localization.model";
-import { SearchOptions } from "../../core/model/filters/searchFilter.model";
+import { SearchOptions } from "../../core/model/filters/searchOptions.model";
 import { UtilsHttpService } from "../http/utils.http.service";
+import { SearchFilters } from "../../core/model/filters/searchFilters.model";
+import { LatLng } from "../../core/model/utils.model";
 
 interface AnalyzedImage {
   path: string;
@@ -13,14 +15,14 @@ interface AnalyzedImage {
 
 @Injectable()
 export class SearchService {
-  availableFiltersBehavior: BehaviorSubject<any[]>;
+  availableFiltersBehavior: BehaviorSubject<SearchFilters>;
   private analyzedImages: AnalyzedImage[];
 
   constructor(
     private utilsHttpService: UtilsHttpService
   ) {
     this.analyzedImages = [];
-    this.availableFiltersBehavior = new BehaviorSubject([]);
+    this.availableFiltersBehavior = new BehaviorSubject(SearchFilters.default);
   }
 
   loadMetadata(paths: string[]) {
@@ -35,7 +37,8 @@ export class SearchService {
   filter(filter: SearchOptions): string[] {
     return this.analyzedImages
       .filter(
-        image => this.filterLocalization(image, filter.localization)
+        image => 
+          this.filterLocalization(image, filter.localization)
           && this.checkCreateDate(image.metadata.createDate, filter.dateInterval)
       )
       .sort(
@@ -69,11 +72,8 @@ export class SearchService {
     }
   }
 
-  private updateImageLocation(imagePath: string, location: any) {
-    this.utilsHttpService.getAddressLocation({
-      lat: location.lat,
-      lon: location.lon,
-    })
+  private updateImageLocation(imagePath: string, location: LatLng) {
+    this.utilsHttpService.getAddressLocation(location)
     .subscribe(
       (res: any) => {
         const localization = Localization.make(res.address);
@@ -93,22 +93,25 @@ export class SearchService {
   }
 
   private addFilter(localization: Localization) {
-    this.availableFiltersBehavior.next(
-      [
-        ...this.availableFiltersBehavior.value,
+    const localizations = [
+        ...this.availableFiltersBehavior.value.localizations,
         localization
-      ]
-      .filter(
+      ].filter(
         (filter, i, arr) => 
           arr.findIndex(
             f => filter.equals(f)
           ) === i
-      )
-    )
+      );
+
+    this.availableFiltersBehavior.next(
+      this.availableFiltersBehavior.value.with(localizations)
+    );
   }
 
   private filterLocalization(image: AnalyzedImage, filter: Localization): boolean {
-    return filter && image.metadata.localization.municipality === filter.municipality;
+    return !filter 
+      || filter === Localization.default
+      || image.metadata.localization.municipality === filter.municipality;
   }
 
   private checkCreateDate(createDate: Date, interval: any): boolean {
