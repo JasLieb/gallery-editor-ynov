@@ -1,25 +1,30 @@
-<div class="gallery-search">
-  <button ion-button color="success" (click)="makeSearch()">
+<ng-container class="gallery-search" *ngIf="isSearchOpen; else elseTemplate">
+  <button ion-button color="success" (click)="makeSearch(minDate, maxDate)">
     <ion-icon name="search"></ion-icon>
   </button>
   <ion-item>
-    <ion-datetime [(ngModel)]="minDate" placeholder="Min"></ion-datetime>
+    <ion-datetime #minDate placeholder="Min"></ion-datetime>
   </ion-item>
   <ion-item>
-    <ion-datetime [(ngModel)]="maxDate" placeholder="Max"></ion-datetime>
+    <ion-datetime #maxDate placeholder="Max"></ion-datetime>
   </ion-item>
-</div>
-<div class="gallery-filters" *ngIf="(filters$ | async) as filters">
-  <ion-item>
-    <ion-label>Localization</ion-label>
-    <ion-select interface="popover" [(ngModel)]="selectedLocalization">
-      <ion-option *ngFor="let filter of filters.localizations" [value]="filter">
-        {{filter.municipality}} - {{filter.county}} - {{filter.country}}
-      </ion-option>
-      <ion-option [value]="defaultLocalization" selected>All</ion-option>
-    </ion-select>
-  </ion-item>
-</div>
+  <div *ngIf="(filters$ | async) as filters">
+    <ion-item>
+      <ion-label>Localization</ion-label>
+      <ion-select interface="alert" [(ngModel)]="selectedLocalization">
+        <ion-option *ngFor="let filter of filters.localizations" [value]="filter">
+          {{filter.municipality}} - {{filter.county}} - {{filter.country}}
+        </ion-option>
+        <ion-option [value]="defaultLocalization" selected>All</ion-option>
+      </ion-select>
+    </ion-item>
+  </div>
+</ng-container>
+<ng-template #elseTemplate>
+  <button ion-button color="success" (click)="openSearch()">
+    Search
+  </button>    
+</ng-template>
 <p *ngIf="images.length > 0">
   {{images.length}} image{{images.length > 1 ? 's': ''}} available
 </p>

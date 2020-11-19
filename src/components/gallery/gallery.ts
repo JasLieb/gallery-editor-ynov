@@ -21,18 +21,9 @@ export class GalleryComponent implements OnInit {
   filters$: Observable<SearchFilters>;
   images: string[];
 
+  isSearchOpen = false;
   defaultLocalization = Localization.default;
   selectedLocalization: Localization = this.defaultLocalization;
-  
-  minDate: IonicDatetimeValue;
-  maxDate: IonicDatetimeValue;
-  
-  get dateInterval(): DateInterval {
-    return {
-      min: this.minDate ? new Date(this.minDate.year, this.minDate.month, this.minDate.day) : null,
-      max: this.maxDate ? new Date(this.maxDate.year, this.maxDate.month, this.maxDate.day) : null
-    };
-  }
 
   constructor(
     private searchService: SearchService
@@ -49,13 +40,21 @@ export class GalleryComponent implements OnInit {
     this.cameraOnOffBehavior.next(on);
   }
 
+  openSearch() {
+    this.isSearchOpen = true;
+  }
+
   // ion-datetime component return {} for IonicDatetimeValue object if untouched component
-  makeSearch() {
-    console.log(this.selectedLocalization);
+  makeSearch(minDate: IonicDatetimeValue, maxDate: IonicDatetimeValue) {
+    const dateInterval = {
+      min: minDate.year ? new Date(minDate.year, minDate.month, minDate.day) : null,
+      max: maxDate.year ? new Date(maxDate.year, maxDate.month, maxDate.day) : null
+    };
     
     this.images = this.searchService.filter({
         localization: this.selectedLocalization,
-        dateInterval: this.dateInterval
+        dateInterval
     });
+    this.isSearchOpen = false;
   }
 }
