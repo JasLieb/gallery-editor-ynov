@@ -1,52 +1,101 @@
 import { Injectable } from "@angular/core";
 import { from } from "rxjs/observable/from";
 import exifr from "exifr";
-import { imagesPaths } from "../../assets/imgs/imageDictionary";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
+import { Localization } from "../../core/model/filters/localization.model";
+import { SearchOptions } from "../../core/model/filters/searchFilter.model";
+import { UtilsHttpService } from "../http/utils.http.service";
 
-interface SearchResult {
+interface AnalyzedImage {
   path: string;
-  meta: any;
+  metadata: any;
 }
 
 @Injectable()
 export class SearchService {
-  private metadatas: SearchResult[];
+  availableFiltersBehavior: BehaviorSubject<any[]>;
+  private analyzedImages: AnalyzedImage[];
 
-  constructor() {
-    this.metadatas = [];
-    this.loadMetadata(imagesPaths);
+  constructor(
+    private utilsHttpService: UtilsHttpService
+  ) {
+    this.analyzedImages = [];
+    this.availableFiltersBehavior = new BehaviorSubject([]);
   }
 
   loadMetadata(paths: string[]) {
     paths.forEach(path => {
-      console.log(path);
       this.getExif(path).subscribe((meta) => {
         console.log(meta);
-        this.metadatas.push({
-          path,
-          meta: {
-            ...meta,
-            createDate: new Date(meta.CreateDate)
-          },
-        } as SearchResult);
+        this.analyzeImage(path, meta);
       });
     });
   }
+  }
+  
+  private analyzeImage(path: string, meta: any) {
+    const image = {
+      path,
+      metadata: {
+        ...meta,
+        localization: Localization.default,
+        createDate: new Date(meta.CreateDate)
+      },
+    } as AnalyzedImage;
 
-  getPerDate(interval: any): string[] {
-    return this.metadatas.filter(
-      (results) => this.checkCreateDate(
-        new Date(results.meta.createDate), 
-        interval
+    this.analyzedImages.push(image);
+
+    if(meta.latitude && meta.longitude) {
+      this.updateImageLocation(
+        image.path,
+        {
+          lat: meta.latitude,
+          lon: meta.longitude
+        }
+      );
+    }
+  }
+
+  private updateImageLocation(imagePath: string, location: any) {
+    this.utilsHttpService.getAddressLocation({
+      lat: location.lat,
+      lon: location.lon,
+    })
+    .subscribe(
+      (res: any) => {
+        const localization = Localization.make(res.address);
+
+        this.analyzedImages = 
+          this.analyzedImages.map(
+            image => {
+              if(image.path === imagePath) {
+                image.metadata.localization = localization;
+              }
+
+              return image;
+            }
+          );
+        this.addFilter(localization);
+    });
+  }
+
+  private addFilter(localization: Localization) {
+    this.availableFiltersBehavior.next(
+      [
+        ...this.availableFiltersBehavior.value,
+        localization
+      ]
+      .filter(
+        (filter, i, arr) => 
+          arr.findIndex(
+            f => filter.equals(f)
+          ) === i
       )
     )
-    .sort(
-      (a,b) => a.meta.createDate - b.meta.createDate
-    )
-    .map(
-      (results) => results.path
-    );
+  }
+
+  private filterLocalization(image: AnalyzedImage, filter: Localization): boolean {
+    return filter && image.metadata.localization.municipality === filter.municipality;
   }
 
   private checkCreateDate(createDate: Date, interval: any): boolean {
