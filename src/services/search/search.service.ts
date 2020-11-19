@@ -31,6 +31,19 @@ export class SearchService {
       });
     });
   }
+
+  filter(filter: SearchOptions): string[] {
+    return this.analyzedImages
+      .filter(
+        image => this.filterLocalization(image, filter.localization)
+          && this.checkCreateDate(image.metadata.createDate, filter.dateInterval)
+      )
+      .sort(
+        (a,b) => a.metadata.createDate - b.metadata.createDate
+      )
+      .map(
+        result => result.path
+      );
   }
   
   private analyzeImage(path: string, meta: any) {
