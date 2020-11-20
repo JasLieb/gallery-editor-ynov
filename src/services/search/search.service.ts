@@ -7,6 +7,8 @@ import { SearchOptions } from "../../core/model/filters/searchOptions.model";
 import { UtilsHttpService } from "../http/utils.http.service";
 import { SearchFilters } from "../../core/model/filters/searchFilters.model";
 import { LatLng } from "../../core/model/utils.model";
+import { FilterBase } from "../../core/model/filters/filter.base.model";
+import { Device } from "../../core/model/filters/device.model";
 
 interface AnalyzedImage {
   path: string;
@@ -39,6 +41,7 @@ export class SearchService {
       .filter(
         image => 
           this.filterLocalization(image, filter.localization)
+          && this.filterDevice(image, filter.device)
           && this.checkCreateDate(image.metadata.createDate, filter.dateInterval)
       )
       .sort(
@@ -48,7 +51,7 @@ export class SearchService {
         result => result.path
       );
   }
-  
+
   private analyzeImage(path: string, meta: any) {
     const image = {
       path,
@@ -70,6 +73,23 @@ export class SearchService {
         }
       );
     }
+
+    if(meta.Make && meta.Model) {
+      this.addDeviceFilter(
+        Device.makeFromMetadata(meta)
+      );
+    }
+  }
+  
+  private addDeviceFilter(device: Device) {
+    const devices = this.addDistinctFilter(
+      this.availableFiltersBehavior.value.devices,
+      device
+    )
+
+    this.availableFiltersBehavior.next(
+      this.availableFiltersBehavior.value.with({devices})
+    );
   }
 
   private updateImageLocation(imagePath: string, location: LatLng) {
@@ -88,23 +108,30 @@ export class SearchService {
               return image;
             }
           );
-        this.addFilter(localization);
+        this.addLocalizationFilter(localization);
     });
   }
 
-  private addFilter(localization: Localization) {
-    const localizations = [
-        ...this.availableFiltersBehavior.value.localizations,
-        localization
-      ].filter(
-        (filter, i, arr) => 
-          arr.findIndex(
-            f => filter.equals(f)
-          ) === i
-      );
+  private addLocalizationFilter(localization: Localization) {
+    const localizations = this.addDistinctFilter(
+      this.availableFiltersBehavior.value.localizations,
+      localization
+    )
 
     this.availableFiltersBehavior.next(
-      this.availableFiltersBehavior.value.with(localizations)
+      this.availableFiltersBehavior.value.with({localizations})
+    );
+  }
+  
+  private addDistinctFilter<T extends FilterBase>(localizations: T[], localization: T): T[] {
+    return [
+      ...localizations,
+      localization
+    ].filter(
+      (filter, i, arr) => 
+        arr.findIndex(
+          f => filter.equals(f)
+        ) === i
     );
   }
 
@@ -112,6 +139,12 @@ export class SearchService {
     return !filter 
       || filter === Localization.default
       || image.metadata.localization.municipality === filter.municipality;
+  }
+
+  private filterDevice(image: AnalyzedImage, device: Device) {
+    return !device
+      || device === Device.default
+      || Device.makeFromMetadata(image.metadata).equals(device);
   }
 
   private checkCreateDate(createDate: Date, interval: any): boolean {
@@ -125,7 +158,6 @@ export class SearchService {
     if(interval.max) {
       max = createDate <= interval.max
     }
-    
     return min && max;
   } 
 

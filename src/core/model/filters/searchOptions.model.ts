@@ -1,3 +1,4 @@
+import { Device } from "./device.model";
 import { Localization } from "./localization.model";
 
 export interface DateInterval {
@@ -8,4 +9,5 @@ export interface DateInterval {
 export interface SearchOptions { 
     localization: Localization;
     dateInterval: DateInterval;
+    device: Device;
 }

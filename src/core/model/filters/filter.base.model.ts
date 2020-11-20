@@ -1,3 +1,3 @@
 export abstract class FilterBase {
-    protected abstract equals(o: any): boolean;
+    abstract equals(o: any): boolean;
 }

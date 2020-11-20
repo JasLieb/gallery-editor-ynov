@@ -1,5 +1,5 @@
 <ng-container class="gallery-search" *ngIf="isSearchOpen; else elseTemplate">
-  <button ion-button color="success" (click)="makeSearch(minDate, maxDate)">
+  <button ion-button color="success" (click)="makeSearch(minDate.value, maxDate.value)">
     <ion-icon name="search"></ion-icon>
   </button>
   <ion-item>
@@ -16,6 +16,16 @@
           {{filter.municipality}} - {{filter.county}} - {{filter.country}}
         </ion-option>
         <ion-option [value]="defaultLocalization" selected>All</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Device</ion-label>
+      <ion-select interface="alert" [(ngModel)]="selectedDevice">
+        <ion-option *ngFor="let device of filters.devices" [value]="device">
+          {{device.name}}
+        </ion-option>
+        <ion-option [value]="defaultDevice" selected>All</ion-option>
       </ion-select>
     </ion-item>
   </div>

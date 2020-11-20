@@ -5,6 +5,7 @@ import { imagesPaths } from "../../assets/imgs/imageDictionary";
 import { DateInterval, SearchOptions } from '../../core/model/filters/searchOptions.model';
 import { Localization } from '../../core/model/filters/localization.model';
 import { SearchFilters } from '../../core/model/filters/searchFilters.model';
+import { Device } from '../../core/model/filters/device.model';
 
 interface IonicDatetimeValue {
   year: number;
@@ -24,6 +25,8 @@ export class GalleryComponent implements OnInit {
   isSearchOpen = false;
   defaultLocalization = Localization.default;
   selectedLocalization: Localization = this.defaultLocalization;
+  defaultDevice = Device.default;
+  selectedDevice: Device = this.defaultDevice;
 
   constructor(
     private searchService: SearchService
@@ -44,7 +47,6 @@ export class GalleryComponent implements OnInit {
     this.isSearchOpen = true;
   }
 
-  // ion-datetime component return {} for IonicDatetimeValue object if untouched component
   makeSearch(minDate: IonicDatetimeValue, maxDate: IonicDatetimeValue) {
     const dateInterval = {
       min: minDate.year ? new Date(minDate.year, minDate.month, minDate.day) : null,
@@ -53,6 +55,7 @@ export class GalleryComponent implements OnInit {
     
     this.images = this.searchService.filter({
         localization: this.selectedLocalization,
+        device: this.selectedDevice,
         dateInterval
     });
     this.isSearchOpen = false;
