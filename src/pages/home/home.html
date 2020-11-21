@@ -5,25 +5,19 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
+<!-- <ion-scroll scrollY="true"> -->
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col col-6 *ngFor="let photo of photoService.photos">
-        <ion-img [src]="photo.data"></ion-img>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <button
-  ion-button 
-  [color]="isCameraStarted ? 'success' : 'danger'" 
-    (click)="toggleCamera()">
-      Camera {{isCameraStarted ? 'on' : 'off'}}
+<ion-list>
+  <ion-item *ngFor="let photo of photoService.photos">
+      <img [src]="photo.data" />
+  </ion-item>
+</ion-list>
+  <button ion-button [color]="isCameraStarted ? 'success' : 'danger'" (click)="toggleCamera()">
+    Camera {{isCameraStarted ? 'on' : 'off'}}
   </button>
-  <button
-    color="success"
-    [disabled]="!isCameraStarted"
-    (click)="takePicture()">
-      Take
+  <button color="success" [disabled]="!isCameraStarted" (click)="takePicture()">
+    Take
   </button>
 </ion-content>
+<!-- </ion-scroll> -->
+

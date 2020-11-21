@@ -30,6 +30,7 @@
     "ionic-angular": "3.9.9",
     "ionicons": "3.0.0",
     "properties-parser": "^0.3.1",
+    "recursive-readdir": "^2.2.2",
     "rxjs": "5.5.11",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.29"
@@ -62,7 +63,9 @@
       "cordova-plugin-androidx": {},
       "cordova-plugin-android-permissions": {},
       "cordova-sqlite-storage": {},
-      "cordova-plugin-camera": {}
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
     }
   }
 }
