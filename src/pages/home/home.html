@@ -1,12 +1,22 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title> Galerie Photo </ion-title>
-  </ion-navbar>
+  <ion-toolbar>
+    <ion-title>
+      Photo Gallery
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
-
-<ion-content padding>
-  <gallery></gallery>
-  <button ion-button
-   [color]="yellow"
-   (click)="takePicture()"></button>
+<!-- <ion-scroll scrollY="true"> -->
+<ion-content>
+<ion-list>
+  <ion-item *ngFor="let photo of photoService.photos">
+      <img [src]="photo.data" />
+  </ion-item>
+</ion-list>
+  <button ion-button [color]="isCameraStarted ? 'success' : 'danger'" (click)="toggleCamera()">
+    Camera {{isCameraStarted ? 'on' : 'off'}}
+  </button>
+  <button color="success" [disabled]="!isCameraStarted" (click)="takePicture()">
+    Take
+  </button>
 </ion-content>
+<!-- </ion-scroll> -->

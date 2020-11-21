@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { PhotoService } from '../../services/photo.service';
 
 @Component({
   selector: 'page-home',
@@ -8,23 +8,30 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 })
 export class HomePage {
 
-  currentImage : any;
-  constructor(public navCtrl: NavController, private camera : Camera) { }
+  isCameraStarted: boolean;
+  currentImage: any;
+
+  constructor(
+    public navCtrl: NavController,
+    public photoService: PhotoService
+  ) { }
+  
+  ngOnInit() {
+    this.isCameraStarted = false;
+    this.toggleCamera();
+    this.photoService.loadSaved();
+  }
+
+  toggleCamera() {
+    this.isCameraStarted = !this.isCameraStarted;
+    if(this.isCameraStarted) {
+      this.photoService.start();
+    } else {
+      this.photoService.stop();
+    }
+  }
 
   takePicture() {
-    const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.DATA_URL,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE
-    };
-
-    this.camera.getPicture(options).then((imageData) => {
-      this.currentImage = 'data:image/jpeg;base64,' + imageData;
-    }, (err) => {
-      // Handle error
-      console.log("Camera issue:" + err);
-    });
+    this.photoService.takePicture();
   }
-  
 }
