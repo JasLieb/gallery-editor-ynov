@@ -9,6 +9,8 @@ import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { HttpModule } from '@angular/http';
+import { ComponentsModule } from '../components/components.module';
+import { SearchService } from '../services/search/search.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,7 @@ import { HttpModule } from '@angular/http';
     IonicModule.forRoot(MyApp),
     BrowserModule,
     HttpModule,
-    IonicModule.forRoot(MyApp)
+    ComponentsModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -33,7 +35,8 @@ import { HttpModule } from '@angular/http';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    OAuthService
+    OAuthService,
+    SearchService
   ]
 })
 export class AppModule {}
