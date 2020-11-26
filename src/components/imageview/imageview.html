@@ -11,4 +11,7 @@ ion-button
 ion-button
 (click) = "applyfilterFlou()"
 >Filtre flou</button>
-<ion-img  [ngClass]="status ? 'gris' : 'pasgris'"  [src]="'https://www.leparisien.fr/resizer/74wMQIeXKLDUKuKvSzJQME_0ULg=/932x582/arc-anglerfish-eu-central-1-prod-leparisien.s3.amazonaws.com/public/KNVYKZBDTTOXNO37FEVDTD5DJU.jpg'"></ion-img>
+<!-- [ngClass]="status ? 'gris' : 'pasgris'"   -->
+{{imageFilterClasses}}
+<img [ngStyle]="formatFilterOptions(imageFilterClasses)"
+    src="https://www.leparisien.fr/resizer/74wMQIeXKLDUKuKvSzJQME_0ULg=/932x582/arc-anglerfish-eu-central-1-prod-leparisien.s3.amazonaws.com/public/KNVYKZBDTTOXNO37FEVDTD5DJU.jpg" />
