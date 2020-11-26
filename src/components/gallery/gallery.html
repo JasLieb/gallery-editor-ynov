@@ -1,4 +1,21 @@
-<button
+<div class="gallery-search">
+  <button ion-button color="success" (click)="makeSearch(min.value, max.value)">
+    <ion-icon name="search"></ion-icon>
+  </button>
+  <ion-item>
+    <ion-datetime #min value="" placeholder="Min"></ion-datetime>
+  </ion-item>
+  <ion-item>
+    <ion-datetime #max value="" placeholder="Max"></ion-datetime>
+  </ion-item>
+</div>
+<p *ngIf="foundImages.length > 0">{{foundImages.length}} image{{foundImages.length > 1 ? 's': ''}} found</p>
+<div class="gallery-images">
+  <img class="gallery-image" *ngFor="let path of foundImages" [src]="path" />
+</div>
+
+<!-- Uncomment here to access to camera component
+  <button
   ion-button
   [color]="cameraOnOffBehavior.value ? 'success' : 'danger'"
   (click)="handleOnOffCamera(!cameraOnOffBehavior.value)"
