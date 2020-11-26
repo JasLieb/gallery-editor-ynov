@@ -1,52 +1,150 @@
 import { Injectable } from "@angular/core";
 import { from } from "rxjs/observable/from";
 import exifr from "exifr";
-import { imagesPaths } from "../../assets/imgs/imageDictionary";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
+import { Localization } from "../../core/model/filters/localization.model";
+import { SearchOptions } from "../../core/model/filters/searchOptions.model";
+import { UtilsHttpService } from "../http/utils.http.service";
+import { SearchFilters } from "../../core/model/filters/searchFilters.model";
+import { LatLng } from "../../core/model/utils.model";
+import { FilterBase } from "../../core/model/filters/filter.base.model";
+import { Device } from "../../core/model/filters/device.model";
 
-interface SearchResult {
+interface AnalyzedImage {
   path: string;
-  meta: any;
+  metadata: any;
 }
 
 @Injectable()
 export class SearchService {
-  private metadatas: SearchResult[];
+  availableFiltersBehavior: BehaviorSubject<SearchFilters>;
+  private analyzedImages: AnalyzedImage[];
 
-  constructor() {
-    this.metadatas = [];
-    this.loadMetadata(imagesPaths);
+  constructor(
+    private utilsHttpService: UtilsHttpService
+  ) {
+    this.analyzedImages = [];
+    this.availableFiltersBehavior = new BehaviorSubject(SearchFilters.default);
   }
 
   loadMetadata(paths: string[]) {
     paths.forEach(path => {
-      console.log(path);
       this.getExif(path).subscribe((meta) => {
         console.log(meta);
-        this.metadatas.push({
-          path,
-          meta: {
-            ...meta,
-            createDate: new Date(meta.CreateDate)
-          },
-        } as SearchResult);
+        this.analyzeImage(path, meta);
       });
     });
   }
 
-  getPerDate(interval: any): string[] {
-    return this.metadatas.filter(
-      (results) => this.checkCreateDate(
-        new Date(results.meta.createDate), 
-        interval
+  filter(filter: SearchOptions): string[] {
+    return this.analyzedImages
+      .filter(
+        image => 
+          this.filterLocalization(image, filter.localization)
+          && this.filterDevice(image, filter.device)
+          && this.checkCreateDate(image.metadata.createDate, filter.dateInterval)
       )
+      .sort(
+        (a,b) => a.metadata.createDate - b.metadata.createDate
+      )
+      .map(
+        result => result.path
+      );
+  }
+
+  private analyzeImage(path: string, meta: any) {
+    const image = {
+      path,
+      metadata: {
+        ...meta,
+        localization: Localization.default,
+        createDate: new Date(meta.CreateDate)
+      },
+    } as AnalyzedImage;
+
+    this.analyzedImages.push(image);
+
+    if(meta.latitude && meta.longitude) {
+      this.updateImageLocation(
+        image.path,
+        {
+          lat: meta.latitude,
+          lon: meta.longitude
+        }
+      );
+    }
+
+    if(meta.Make && meta.Model) {
+      this.addDeviceFilter(
+        Device.makeFromMetadata(meta)
+      );
+    }
+  }
+  
+  private addDeviceFilter(device: Device) {
+    const devices = this.addDistinctFilter(
+      this.availableFiltersBehavior.value.devices,
+      device
     )
-    .sort(
-      (a,b) => a.meta.createDate - b.meta.createDate
-    )
-    .map(
-      (results) => results.path
+
+    this.availableFiltersBehavior.next(
+      this.availableFiltersBehavior.value.with({devices})
     );
+  }
+
+  private updateImageLocation(imagePath: string, location: LatLng) {
+    this.utilsHttpService.getAddressLocation(location)
+    .subscribe(
+      (res: any) => {
+        const localization = Localization.make(res.address);
+
+        this.analyzedImages = 
+          this.analyzedImages.map(
+            image => {
+              if(image.path === imagePath) {
+                image.metadata.localization = localization;
+              }
+
+              return image;
+            }
+          );
+        this.addLocalizationFilter(localization);
+    });
+  }
+
+  private addLocalizationFilter(localization: Localization) {
+    const localizations = this.addDistinctFilter(
+      this.availableFiltersBehavior.value.localizations,
+      localization
+    )
+
+    this.availableFiltersBehavior.next(
+      this.availableFiltersBehavior.value.with({localizations})
+    );
+  }
+  
+  private addDistinctFilter<T extends FilterBase>(localizations: T[], localization: T): T[] {
+    return [
+      ...localizations,
+      localization
+    ].filter(
+      (filter, i, arr) => 
+        arr.findIndex(
+          f => filter.equals(f)
+        ) === i
+    );
+  }
+
+  private filterLocalization(image: AnalyzedImage, filter: Localization): boolean {
+    return !filter 
+      || filter === Localization.default
+      || image.metadata.localization.municipality === filter.municipality;
+  }
+
+  private filterDevice(image: AnalyzedImage, device: Device) {
+    return !device
+      || device === Device.default
+      || Device.makeFromMetadata(image.metadata).equals(device);
   }
 
   private checkCreateDate(createDate: Date, interval: any): boolean {
@@ -60,7 +158,6 @@ export class SearchService {
     if(interval.max) {
       max = createDate <= interval.max
     }
-    
     return min && max;
   } 
 

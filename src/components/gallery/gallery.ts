@@ -1,6 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SearchService } from '../../services/search/search.service';
+import { imagesPaths } from "../../assets/imgs/imageDictionary";
+import { DateInterval, SearchOptions } from '../../core/model/filters/searchOptions.model';
+import { Localization } from '../../core/model/filters/localization.model';
+import { SearchFilters } from '../../core/model/filters/searchFilters.model';
+import { Device } from '../../core/model/filters/device.model';
+
+interface IonicDatetimeValue {
+  year: number;
+  month: number;
+  day: number;
+}
 
 @Component({
   selector: 'gallery',
@@ -8,13 +19,22 @@ import { SearchService } from '../../services/search/search.service';
 })
 export class GalleryComponent implements OnInit {
   cameraOnOffBehavior: BehaviorSubject<boolean>;
-  foundImages: string[];
+  filters$: Observable<SearchFilters>;
+  images: string[];
+
+  isSearchOpen = false;
+  defaultLocalization = Localization.default;
+  selectedLocalization: Localization = this.defaultLocalization;
+  defaultDevice = Device.default;
+  selectedDevice: Device = this.defaultDevice;
 
   constructor(
     private searchService: SearchService
   ) { 
     this.cameraOnOffBehavior = new BehaviorSubject(false);
-    this.foundImages  = [];
+    this.images  = [...imagesPaths];
+    this.searchService.loadMetadata(this.images);
+    this.filters$ = this.searchService.availableFiltersBehavior.asObservable();
   }
 
   ngOnInit(): void {}
@@ -23,11 +43,21 @@ export class GalleryComponent implements OnInit {
     this.cameraOnOffBehavior.next(on);
   }
 
-  // ion-datetime component return {} object if untouched component
-  makeSearch(min: any, max: any) {
-    this.foundImages = this.searchService.getPerDate({
-      min: min.year ? new Date(min.year, min.month, min.day) : null,
-      max: max.year ? new Date(max.year, max.month, max.day) : null
+  openSearch() {
+    this.isSearchOpen = true;
+  }
+
+  makeSearch(minDate: IonicDatetimeValue, maxDate: IonicDatetimeValue) {
+    const dateInterval = {
+      min: minDate.year ? new Date(minDate.year, minDate.month, minDate.day) : null,
+      max: maxDate.year ? new Date(maxDate.year, maxDate.month, maxDate.day) : null
+    };
+    
+    this.images = this.searchService.filter({
+        localization: this.selectedLocalization,
+        device: this.selectedDevice,
+        dateInterval
     });
+    this.isSearchOpen = false;
   }
 }
