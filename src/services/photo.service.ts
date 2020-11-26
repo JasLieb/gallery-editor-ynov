@@ -34,7 +34,7 @@ export class PhotoService {
         this.cameraPreview.takePicture(optionsPreview).then((imageData) => {
             // Add new photo to gallery
             this.photos.unshift({
-                data: 'data:image/jpeg;base64,' + imageData
+                data: 'data:image/png;base64,' + imageData
             });
             console.log(imageData);
 
