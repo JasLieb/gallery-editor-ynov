@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { CameraPreview, CameraPreviewOptions } from '@ionic-native/camera-preview';
 import { Storage } from '@ionic/storage';
 
@@ -21,16 +20,10 @@ export class PhotoService {
 
     public photos: Photo[] = [];
 
-    constructor(private cameraPreview: CameraPreview,private camera: Camera, private storage: Storage) { }
+    constructor(private cameraPreview: CameraPreview, private storage: Storage) { }
 
 
     takePicture()  {
-        const options: CameraOptions = {
-            quality: 100,
-            destinationType: this.camera.DestinationType.DATA_URL,
-            encodingType: this.camera.EncodingType.JPEG,
-            mediaType: this.camera.MediaType.PICTURE
-        }
         this.cameraPreview.takePicture(optionsPreview).then((imageData) => {
             // Add new photo to gallery
             this.photos.unshift({
@@ -78,8 +71,6 @@ export class PhotoService {
                 }
             );
     }
-    
-
 }
 
 

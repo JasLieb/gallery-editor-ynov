@@ -11,6 +11,7 @@ import { PhotoService } from '../services/photo.service';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
 import { UtilsHttpService } from '../services/http/utils.http.service';
+import { CameraComponent } from '../components/camera/camera';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { UtilsHttpService } from '../services/http/utils.http.service';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SearchService,
     PhotoService,
-    UtilsHttpService
+    UtilsHttpService,
+    CameraComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

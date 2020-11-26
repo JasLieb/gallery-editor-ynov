@@ -9,16 +9,16 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col col-6 *ngFor="let photo of photoService.photos">
-        <img ion-img [src]="photo.data" />
-      </ion-col>
+      <button ion-button [color]="isCameraStarted ? 'success' : 'danger'" (click)="toggleCamera()">
+        Camera {{isCameraStarted ? 'on' : 'off'}}
+      </button>
+      <button ion-button color="success" [disabled]="!isCameraStarted" (click)="takePicture()">
+        Take
+      </button>
     </ion-row>
-    <button ion-button [color]="isCameraStarted ? 'success' : 'danger'" (click)="toggleCamera()">
-      Camera {{isCameraStarted ? 'on' : 'off'}}
-    </button>
-    <button ion-button color="success" [disabled]="!isCameraStarted" (click)="takePicture()">
-      Take
-    </button>
+    <ion-row>
+      <gallery></gallery>
+    </ion-row>
   </ion-grid>
 </ion-content>
 
