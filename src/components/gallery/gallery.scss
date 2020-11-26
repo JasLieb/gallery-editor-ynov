@@ -1,0 +1,14 @@
+.gallery-search {
+    display: flex;
+    align-items: center;
+
+}
+
+.gallery-images {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.gallery-image {
+    flex-grow: 4;
+}
