@@ -5,37 +5,41 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { LoginPage } from '../pages/login/login';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { HttpModule } from '@angular/http';
+
 import { ComponentsModule } from '../components/components.module';
 import { SearchService } from '../services/search/search.service';
+
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    LoginPage
+
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     BrowserModule,
-    HttpModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireAuthModule,
+    AngularFireDatabaseModule,
+    AngularFirestoreModule,
     ComponentsModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    LoginPage
+
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    OAuthService,
+    AngularFirestoreModule,
     SearchService
   ]
 })
