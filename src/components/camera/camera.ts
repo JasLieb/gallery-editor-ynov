@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { CameraPreview, CameraPreviewOptions } from '@ionic-native/camera-preview';
+import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions } from '@ionic-native/camera-preview';
 import { Observable } from 'rxjs/Observable';
 import { Storage } from '@ionic/storage';
 import { Subject } from 'rxjs';
 import { PhotoService } from '../../services/photo.service';
 import { Photo } from '../../core/model/photo.model';
+import { DomSanitizer } from '@angular/platform-browser';
 
 const cameraPreviewOpts: CameraPreviewOptions = {
   x: 0,
@@ -17,6 +18,12 @@ const cameraPreviewOpts: CameraPreviewOptions = {
   toBack: false,
   alpha: 1,
 };
+
+const pictureOpts: CameraPreviewPictureOptions = {
+  width: 0,
+  height: 0,
+  quality: 85
+}
 
 @Component({
   selector: 'camera',
@@ -31,16 +38,19 @@ export class CameraComponent {
 
   constructor(
     private photoService: PhotoService,
-    private cameraPreview: CameraPreview
+    private cameraPreview: CameraPreview,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
   }
 
   takePicture() {
-    this.cameraPreview.takePicture(cameraPreviewOpts).then((imageData) => {
+    this.cameraPreview.takePicture(pictureOpts).then((imageData) => {
       this.photoService.savePhoto(
-        new Photo(`data:image/jpg;base64, ${imageData}`)
+        new Photo(
+          this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${imageData}`)
+        )
       );
       // Save all photos for later viewing
     }, (err) => {

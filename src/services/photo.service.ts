@@ -19,13 +19,17 @@ export class PhotoService {
     }
 
     loadSaved() {
-        this.storage.get('photos').then((photos) => {
-            this.photosBehavior.next(
-                photos || []
-            );
-        }), (err) => {
-            console.log("Photo load issue: " + err);
-        };
+        this.storage.get('photos').then(
+            (photos) => {
+                console.log(photos);            
+                this.photosBehavior.next(
+                    photos || []
+                );
+            }, 
+            (err) => {
+                console.log("Photo load issue: " + err);
+            }
+        );
     }
 
     savePhoto(photo: Photo) {
