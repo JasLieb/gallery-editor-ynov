@@ -6,6 +6,9 @@ import { DateInterval, SearchOptions } from '../../core/model/filters/searchOpti
 import { Localization } from '../../core/model/filters/localization.model';
 import { SearchFilters } from '../../core/model/filters/searchFilters.model';
 import { Device } from '../../core/model/filters/device.model';
+import { of } from 'rxjs/observable/of';
+import { PhotoService } from '../../services/photo.service';
+import { Photo } from '../../core/model/photo.model';
 
 interface IonicDatetimeValue {
   year: number;
@@ -20,7 +23,8 @@ interface IonicDatetimeValue {
 export class GalleryComponent implements OnInit {
   cameraOnOffBehavior: BehaviorSubject<boolean>;
   filters$: Observable<SearchFilters>;
-  images: string[];
+  // images: string[];
+  images$: Observable<Photo[]>
 
   isSearchOpen = false;
   defaultLocalization = Localization.default;
@@ -29,11 +33,20 @@ export class GalleryComponent implements OnInit {
   selectedDevice: Device = this.defaultDevice;
 
   constructor(
+    private photoService: PhotoService,
     private searchService: SearchService
   ) { 
     this.cameraOnOffBehavior = new BehaviorSubject(false);
-    this.images  = [...imagesPaths];
-    this.searchService.loadMetadata(this.images);
+    // this.images  = [...imagesPaths];
+    this.images$ = this.photoService.photos$;
+    //of(this.images)
+    // .pipe(
+    //   distinctUntilChanged(),
+    //   filter(images => images.filter(i => i.length > 0)),
+    //   // ...
+    // );
+  
+    // this.searchService.loadMetadata(this.images);
     this.filters$ = this.searchService.availableFiltersBehavior.asObservable();
   }
 
@@ -53,11 +66,11 @@ export class GalleryComponent implements OnInit {
       max: maxDate.year ? new Date(maxDate.year, maxDate.month, maxDate.day) : null
     };
     
-    this.images = this.searchService.filter({
-        localization: this.selectedLocalization,
-        device: this.selectedDevice,
-        dateInterval
-    });
+    // this.images = this.searchService.filter({
+    //     localization: this.selectedLocalization,
+    //     device: this.selectedDevice,
+    //     dateInterval
+    // });
     this.isSearchOpen = false;
   }
 }

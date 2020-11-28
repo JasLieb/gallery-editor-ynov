@@ -1,80 +1,41 @@
 import { Injectable } from '@angular/core';
-import { CameraPreview, CameraPreviewOptions } from '@ionic-native/camera-preview';
 import { Storage } from '@ionic/storage';
-
-const optionsPreview: CameraPreviewOptions = {
-    x: 0,
-    y: 0,
-    width: window.screen.width,
-    height: window.screen.height,
-    camera: 'rear',
-    tapPhoto: true,
-    previewDrag: true,
-    toBack: true,
-    alpha: 1
-}
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Photo } from '../core/model/photo.model';
 
 
 @Injectable()
 export class PhotoService {
 
-    public photos: Photo[] = [];
+    private photosBehavior: BehaviorSubject<Photo[]>;
 
-    constructor(private cameraPreview: CameraPreview, private storage: Storage) { }
+    get photos$(): Observable<Photo[]> {
+        return this.photosBehavior.asObservable();
+    }
 
-
-    takePicture()  {
-        this.cameraPreview.takePicture(optionsPreview).then((imageData) => {
-            // Add new photo to gallery
-            this.photos.unshift({
-                data: 'data:image/png;base64,' + imageData
-            });
-            console.log(imageData);
-
-            // Save all photos for later viewing
-            this.storage.set('photos', this.photos);
-        }, (err) => {
-            // Handle error
-            console.log("Camera issue: " + err);
-        });
-
+    constructor(private storage: Storage) { 
+        this.photosBehavior = new BehaviorSubject([]);
+        this.loadSaved();
     }
 
     loadSaved() {
         this.storage.get('photos').then((photos) => {
-            this.photos = photos || [];
+            this.photosBehavior.next(
+                photos || []
+            );
         }), (err) => {
-            // Handle error
-            console.log("Camera issue: " + err);
+            console.log("Photo load issue: " + err);
         };
     }
 
-    start() {
-        this.cameraPreview.startCamera(optionsPreview)
-            .then(
-                (res) => {
-                    console.log(res);
-                },
-                (err) => {
-                    console.log(err);
-                }
-            );
+    savePhoto(photo: Photo) {
+        const newPhotos = [
+            ...this.photosBehavior.value,
+            photo
+        ];
+        console.log(photo.data);
+        this.storage.set('photos', newPhotos);
+        this.photosBehavior.next(newPhotos);
     }
 
-    stop() {
-        this.cameraPreview.stopCamera().then(
-                (res) => {
-                    console.log(res);
-                },
-                (err) => {
-                    console.log(err);
-                }
-            );
-    }
-}
-
-
-
-class Photo {
-         data: any;
 }

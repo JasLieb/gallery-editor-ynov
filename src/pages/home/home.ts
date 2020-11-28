@@ -18,7 +18,6 @@ export class HomePage {
   
   ngOnInit() {
     this.isCameraStarted = false;
-    this.cameraComponent.loadSaved();
   }
 
   toggleCamera() {

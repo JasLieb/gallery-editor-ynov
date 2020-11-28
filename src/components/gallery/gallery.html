@@ -35,11 +35,17 @@
     Search
   </button>    
 </ng-template>
-<p *ngIf="images.length > 0">
+<p *ngIf="(images$ | async) as images">
   {{images.length}} image{{images.length > 1 ? 's': ''}} available
 </p>
 <div class="gallery-images">
-  <img class="gallery-image" *ngFor="let path of images" [src]="path" />
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6 *ngFor="let image of (images$ | async)">
+        <img class="gallery-image" src="{{image.data}}" />
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </div>
 
 <!-- Uncomment here to access to camera component

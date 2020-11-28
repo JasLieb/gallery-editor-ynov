@@ -1,3 +1,5 @@
+import { Photo } from "../../core/model/photo.model";
+
 const BASE_PATH='assets/imgs/';
 
 export const imagesPaths = [
@@ -8,4 +10,6 @@ export const imagesPaths = [
     `${BASE_PATH}pc.jpg`,
     `${BASE_PATH}plaine.jpg`,
     `${BASE_PATH}port.jpg`,
-]
+];
+
+export const defaultImages = imagesPaths.map(path => new Photo(path));
