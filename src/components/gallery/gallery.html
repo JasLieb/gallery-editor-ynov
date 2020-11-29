@@ -1,5 +1,9 @@
 <ng-container class="gallery-search" *ngIf="isSearchOpen; else elseTemplate">
-  <button ion-button color="success" (click)="makeSearch(minDate.value, maxDate.value)">
+  <button
+    ion-button
+    color="success"
+    (click)="makeSearch(minDate.value, maxDate.value)"
+  >
     <ion-icon name="search"></ion-icon>
   </button>
   <ion-item>
@@ -12,7 +16,10 @@
     <ion-item>
       <ion-label>Localization</ion-label>
       <ion-select interface="alert" [(ngModel)]="selectedLocalization">
-        <ion-option *ngFor="let filter of filters.localizations" [value]="filter">
+        <ion-option
+          *ngFor="let filter of filters.localizations"
+          [value]="filter"
+        >
           {{filter.municipality}} - {{filter.county}} - {{filter.country}}
         </ion-option>
         <ion-option [value]="defaultLocalization" selected>All</ion-option>
@@ -31,15 +38,22 @@
   </div>
 </ng-container>
 <ng-template #elseTemplate>
-  <button ion-button color="success" (click)="openSearch()">
-    Search
-  </button>    
+  <button ion-button color="success" (click)="openSearch()">Search</button>
 </ng-template>
+<canvas #canvasEl width="490" height="490"></canvas>
+
 <p *ngIf="images.length > 0">
   {{images.length}} image{{images.length > 1 ? 's': ''}} available
 </p>
 <div class="gallery-images">
-  <img class="gallery-image" *ngFor="let path of images" [src]="path" />
+  <div
+    class="gallery-image-container"
+    [class.selected-image]="isSelectedImage(path)"
+    *ngFor="let path of images"
+    (click)="selectImage(path)"
+  >
+    <img class="gallery-image" [src]="path" />
+  </div>
 </div>
 
 <!-- Uncomment here to access to camera component

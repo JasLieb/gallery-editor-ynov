@@ -1,14 +1,25 @@
 .gallery-search {
     display: flex;
     align-items: center;
-
 }
 
 .gallery-images {
     display: flex;
-    flex-flow: row wrap;
+    flex-wrap: wrap;
+}
+
+.gallery-image-container {
+    flex: 1 1 auto;
+    max-width: 30%;
+    margin: 1em;
+}
+
+.selected-image {
+    background-color: red;
 }
 
 .gallery-image {
-    flex-grow: 4;
+    max-width: 100%;
+    max-height: 30%;
+    height: auto;
 }

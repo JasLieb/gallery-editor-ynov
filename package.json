@@ -60,6 +60,9 @@
       "cordova-plugin-camera-preview": {},
       "cordova-plugin-androidx": {},
       "cordova-plugin-android-permissions": {}
-    }
+    },
+    "platforms": [
+      "android"
+    ]
   }
 }
