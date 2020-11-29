@@ -1,15 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ComponentsModule } from '../components/components.module';
 import { SearchService } from '../services/search/search.service';
+import { PhotoService } from '../services/photo.service';
+import { IonicStorageModule } from '@ionic/storage';
+import { SearchService } from '../services/search/search.service';
 import { HttpClientModule } from '@angular/common/http';
 import { UtilsHttpService } from '../services/http/utils.http.service';
+import { CameraComponent } from '../components/camera/camera';
 
 @NgModule({
   declarations: [
@@ -17,9 +20,10 @@ import { UtilsHttpService } from '../services/http/utils.http.service';
     HomePage,
   ],
   imports: [
-    BrowserModule,        
+    BrowserModule,
     HttpClientModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
     ComponentsModule,
   ],
   bootstrap: [IonicApp],
@@ -31,8 +35,12 @@ import { UtilsHttpService } from '../services/http/utils.http.service';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    PhotoService,
     SearchService,
-    UtilsHttpService
+    PhotoService,
+    UtilsHttpService,
+    CameraComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {}

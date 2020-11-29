@@ -1,9 +1,24 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title> Ionic Blank </ion-title>
-  </ion-navbar>
+  <ion-toolbar>
+    <ion-title>
+      Photo Gallery
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
-
-<ion-content padding>
-  <gallery></gallery>
+<ion-content>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <button ion-button [color]="isCameraStarted ? 'success' : 'danger'" (click)="toggleCamera()">
+        Camera {{isCameraStarted ? 'on' : 'off'}}
+      </button>
+      <button ion-button color="success" [disabled]="!isCameraStarted" (click)="takePicture()">
+        Take
+      </button>
+    </ion-row>
+    <ion-row>
+      <gallery></gallery>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+

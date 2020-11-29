@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CameraPreview, CameraPreviewOptions } from '@ionic-native/camera-preview';
 import { Observable } from 'rxjs/Observable';
+import { Storage } from '@ionic/storage';
 
 const cameraPreviewOpts: CameraPreviewOptions = {
   x: 0,
@@ -20,36 +21,70 @@ const cameraPreviewOpts: CameraPreviewOptions = {
 })
 export class CameraComponent {
 
+  public photos: Photo[] = [];
+
   @Input() onOff$: Observable<any>;
 
   text: string;
 
   constructor(
     private cameraPreview: CameraPreview,
-  ) {
-    this.start();
-  }
+    private storage: Storage,
+  ) { }
 
   ngOnInit(): void {
-    this.onOff$.subscribe(
-      on => 
-        on 
-          ? this.start()
-          : this.cameraPreview.stopCamera().then()
-    );
   }
 
-  private start() {
+  takePicture() {
+    this.cameraPreview.takePicture(cameraPreviewOpts).then((imageData) => {
+      // Add new photo to gallery
+      this.photos.unshift({
+        data: 'data:image/png;base64,' + imageData
+      });
+      console.log(imageData);
+
+      // Save all photos for later viewing
+      this.storage.set('photos', this.photos);
+    }, (err) => {
+      // Handle error
+      console.log("Camera issue: " + err);
+    });
+
+  }
+
+  loadSaved() {
+    this.storage.get('photos').then((photos) => {
+      this.photos = photos || [];
+    }), (err) => {
+      // Handle error
+      console.log("Camera issue: " + err);
+    };
+  }
+
+  start() {
     this.cameraPreview.startCamera(cameraPreviewOpts)
       .then(
         (res) => {
-          this.text = res;
           console.log(res);
         },
         (err) => {
-          this.text = err;
           console.log(err);
         }
       );
   }
+
+  stop() {
+    this.cameraPreview.stopCamera().then(
+      (res) => {
+        console.log(res);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+}
+
+class Photo {
+  data: any;
 }
