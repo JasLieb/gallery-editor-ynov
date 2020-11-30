@@ -6,11 +6,26 @@
   Camera {{cameraOnOffBehavior.value ? "On" : "Off"}}
 </button>
 
-<button
-  ion-button
-  (click)="showGallery()"
->
-  Galerie photo
+<button ion-button (click)="addPhoto()" color="tertiary" expand="block">
+  <ion-icon name="image" slot="start"></ion-icon>
+  Ouvrir la bibliothèque
 </button>
 
+<div class="flex">
+  <div class="img-box">
+    <img [src]="image">
+  </div>
+</div>
+
+<!--
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6 *ngFor="let photo of photoService.photos">
+        <img [src]="photo.data" />
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+-->
 <camera [onOff$]="cameraOnOffBehavior"></camera>
