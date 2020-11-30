@@ -1,0 +1,12 @@
+<img
+class="image-preview"
+[src]="imageSrc"
+[ngStyle]="{'filter': 
+'grayscale(' + filter.grayscale + ')' + 
+'blur(' + filter.blur + ')' + 
+'contrast(' + filter.contrast + ')' + 
+'brightness(' + filter.brightness + ')' +
+'invert(' + filter.invert + ')' +
+'sepia(' + filter.sepia + ')'}"
+/>
+<button class="filter-btn" ion-button full (click)="applyFilter()">{{name}}</button>

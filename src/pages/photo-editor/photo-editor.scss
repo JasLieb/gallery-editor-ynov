@@ -3,6 +3,10 @@ page-photo-editor {
         width: 100%;
     }
 
+    .filter-btn {
+        margin-top: 0;
+    }
+
     //Les filtres css sont rajoutés dynamiquement dans le .ts afin de pouvoir additionner les filtres.
     // .gray {
     //     filter: grayscale(80%);
